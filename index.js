@@ -20,6 +20,21 @@ var async = require('async'),
     },
 
     /**
+     * Method getSearchableCustomFields        
+     * @param params
+     * @returns {Array}
+     */
+    getSearchableCustomFields = function (params) {
+        return params.searchCustom.filter(function (column) {
+            return column.value;
+        }).map(function (column) {
+            var search = {};
+            search[column.name] = new RegExp(column.value, 'i');
+            return search;
+        });
+    },
+
+    /**
      * Method isNaNorUndefined
      * Checks if any of the passed params is NaN or undefined.
      * Used to check DataTable's properties draw, start and length
@@ -55,14 +70,22 @@ var async = require('async'),
      */
     buildFindParameters = function (params) {
 
-        if (!params || !params.columns || !params.search || (!params.search.value && params.search.value !== '')) {
+        if (!params || !params.columns || !params.search || 
+            (!params.search.value && params.search.value !== '')) {
             return null;
         }
 
         var searchText = params.search.value,
             findParameters = {},
-            searchRegex,
-            searchOrArray = [];
+            searchRegex,            
+            searchOrArray = [];    
+
+        var searchableFields = getSearchableCustomFields(params);        
+        if (searchableFields.length > 0) {        
+            findParameters.$and = searchableFields;
+            console.log(findParameters);
+            return findParameters;
+        }
 
         if (searchText === '') {
             return findParameters;
@@ -70,7 +93,7 @@ var async = require('async'),
 
         searchRegex = new RegExp(searchText, 'i');
 
-        var searchableFields = getSearchableFields(params);
+        searchableFields = getSearchableFields(params);
 
         if (searchableFields.length === 1) {
             findParameters[searchableFields[0]] = searchRegex;
@@ -81,10 +104,10 @@ var async = require('async'),
             var orCondition = {};
             orCondition[field] = searchRegex;
             searchOrArray.push(orCondition);
-        });
+        });       
 
         findParameters.$or = searchOrArray;
-
+        
         return findParameters;
     },
 
@@ -190,6 +213,7 @@ var async = require('async'),
                     function runQuery (cb) {
                         Model
                             .find(findParameters)
+                            //.find({'cor': 'azul'})
                             .limit(length)
                             .skip(start)
                             .sort(sortParameters)

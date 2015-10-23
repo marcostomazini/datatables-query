@@ -130,9 +130,7 @@ Feel free to fork and mess with this code. But, before opening PRs, be sure that
 
 The MIT License (MIT)
 
-[![Fiddus Tecnologia](http://fiddus.com.br/assets/img/logo-site.png)](http://fiddus.com.br)
-
-Copyright (c) 2015 Vinicius Teixeira vinicius0026@gmail.com
+Copyright (c) 2015 Vinicius Teixeira vinicius0026@gmail.com | custom: marcos.tomazini@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
