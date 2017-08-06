@@ -213,7 +213,7 @@ var async = require('async'),
                     function runQuery (cb) {
                         Model
                             .find(findParameters)
-                            //.find({'cor': 'azul'})
+                            .populate('leilao', 'date')
                             .limit(length)
                             .skip(start)
                             .sort(sortParameters)
